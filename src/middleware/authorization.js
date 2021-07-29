@@ -9,7 +9,7 @@ module.exports = app => {
       .first();
 
     // pesquisa Requisição
-    const findRequest = await app.db("request_screen")
+    const findRequest = await app.db("request_route")
       .where({
         deleted_at: null,
         url: req.route.path

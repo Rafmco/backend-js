@@ -7,7 +7,7 @@ exports.up = function (knex, Promise) {
     table.integer("request_id").unsigned().notNullable();
 
     table.foreign("user_id").references("id").inTable("user");
-    table.foreign("request_id").references("id").inTable("request_screen");
+    table.foreign("request_id").references("id").inTable("request_route");
 
     table.string("created_by", 15);
     table.timestamp("created_at").nullable();

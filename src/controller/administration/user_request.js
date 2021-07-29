@@ -2,8 +2,8 @@ const validate = require("validate.js");
 
 /**
  * @author Eder Ferraz Caciano
- * @class User Screen
- * @description User Screen Controller Class
+ * @class User Route
+ * @description User Route Controller Class
  * @param {this} app
  */
 module.exports = app => {
@@ -22,18 +22,18 @@ module.exports = app => {
       await app.db
         .select(
           "user_request.id",
-          "request_screen.id as requestId",
-          "request_screen.description as description",
-          "request_screen.url as url",
+          "request_route.id as requestId",
+          "request_route.description as description",
+          "request_route.url as url",
           "user.id as userId",
           "user.name as userName",
           "user.login as userLogin"
         )
         .from("user_request")
-        .leftJoin("request_screen", "request_screen.id", "user_request.request_id")
+        .leftJoin("request_route", "request_route.id", "user_request.request_id")
         .leftJoin("user", "user.id", "user_request.user_id")
         .where({
-          "request_screen.deleted_at": null,
+          "request_route.deleted_at": null,
           "user_request.deleted_at": null,
           "user_request.user_id": req.params.userId
         })
@@ -63,13 +63,13 @@ module.exports = app => {
 
       if (findUser && !findUser.length) return res.json({ erro: "User not found!" });
 
-      const findScreen = await app.db("request_screen")
+      const findRoute = await app.db("request_route")
         .where({
           deleted_at: null,
           id: requestUser.request_id
         });
 
-      if (findScreen && !findScreen.length) return res.json({ erro: "Request not found!" });
+      if (findRoute && !findRoute.length) return res.json({ erro: "Request not found!" });
 
       const findRelationship = await app.db("user_request")
         .where({
@@ -87,7 +87,7 @@ module.exports = app => {
           ...requestUser
         });
 
-      return res.json({ message: "Request inserted for the user successfull!", screenId: response[0] });
+      return res.json({ message: "Request inserted for the user successfull!", routeId: response[0] });
     } catch (error) {
       return res.json({ erro: error });
     }
