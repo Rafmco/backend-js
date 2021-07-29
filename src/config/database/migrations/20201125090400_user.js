@@ -20,7 +20,6 @@ exports.up = function (knex, Promise) {
     table.timestamp("deleted_at").nullable();
   }).then(() => {
     return knex("user").insert({
-      birth_date: "",
       created_at: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       created_by: "MIGRATE SYSTEM",
       email: "eder.ferraz.caciano@hotmail.com",
