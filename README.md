@@ -22,4 +22,20 @@ This is an example of a basic backend application in Java Script.
 ### Start Production
  > yarn start
 
- ---
+
+## 💻 Requests
+- POST
+  - `http://localhost:5000/login`
+  ```
+  {
+	   "login": "",
+	   "password": ""
+   }
+  ```
+
+- GET
+  - `http://localhost:5000/user/listar`
+  ```
+  {}
+  ```
+  - Auth Bearer TOKEN: ""
