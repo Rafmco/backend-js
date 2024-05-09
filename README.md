@@ -7,6 +7,9 @@ This is an example of a basic backend application in Java Script.
 ### Install
  > yarn
 
+### Configurar .env
+ > APP_KEY pode ser gerada com:
+ >> gitbash: `$ openssl rand -base64 32`
 ### Migrate Tables Database
  > yarn migrate
 
