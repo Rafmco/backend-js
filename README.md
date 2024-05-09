@@ -1,26 +1,27 @@
-# backend-js
-This is an example of a basic backend application in Java Script.
+<a name="readme-top"></a>
+  <h1 align="center">backend-js</h1>
+<p align="center">
+</p>
 
- - validar se o usuário tem permissao pra executar a rota
----
 
-### Install
- > yarn
+### Basic backend application in NodeJS
 
-### Configurar .env
+- validar se o usuário tem permissao pra executar a rota
+
+
+## 🚀 Instalação
+1. `yarn` e `yarn install`
+2. Configurar .env
  > APP_KEY pode ser gerada com:
  >> gitbash: `$ openssl rand -base64 32`
-### Migrate Tables Database
- > yarn migrate
-
-### Check Lint Errors
- > yarn lint
-
-### Start Debug
- > yarn dev
-
-### Start Production
- > yarn start
+3. Migrate Tables Database
+  `yarn migrate`
+4. Check Lint Errors
+  `yarn lint`
+5. Start Debug
+  `yarn dev`
+6. Start Production
+  `yarn start`
 
 
 ## 💻 Requests
