@@ -6,14 +6,15 @@ module.exports = {
   connection: {
     database: env.DB_DATABASE,
     host: env.DB_HOST,
+    port: env.DB_PORT,
     password: env.DB_PASSWORD,
-    user: env.DB_USERNAME
+    user: env.DB_USERNAME,
   },
   migrations: {
-    tableName: "knex_migrations"
+    tableName: "knex_migrations",
   },
   pool: {
     max: 10,
-    min: 2
-  }
+    min: 2,
+  },
 };
