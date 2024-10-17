@@ -7,6 +7,7 @@ exports.up = function (knex) {
       table.string("name", 60).nullable();
       table.string("login", 45).nullable();
       table.string("password", 250).nullable();
+      table.timestamp("expiration_date").nullable();
       table.string("email", 250).nullable();
       table.timestamp("birth_date").nullable();
       table.string("url_photograph", 250).nullable();
@@ -29,6 +30,7 @@ exports.up = function (knex) {
         name: "Teste User",
         password:
           "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
+        expiration_date: dayjs().add(1, "month").format("YYYY-MM-DD"),
         telephone: "",
         theme: "",
         url_photograph: "",
