@@ -18,6 +18,18 @@ module.exports = (app) => {
 
       const findUser = await app
         .db("user")
+        .select(
+          "user.id",
+          "user.name",
+          "user.login",
+          "user.password",
+          app.db.raw(
+            "IF(user.expiration_date < now(), 1, 0) AS expiredPassword"
+          ),
+          "user.email",
+          "user.url_photograph"
+        )
+        .whereNull("user.deleted_at")
         .where({
           login: user.login,
           password: user.password,
