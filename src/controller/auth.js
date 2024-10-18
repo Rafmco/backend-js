@@ -42,13 +42,33 @@ module.exports = (app) => {
         return res.json({ erro: "User or password not found!" });
       }
 
+      // User_Route
+      const findUserRoutes = await app
+        .db("user_route")
+        .select("route.name", "route.url", "route.order")
+        .innerJoin("route", function () {
+          this.onNull("route.deleted_at").andOn(
+            "route.id",
+            "user_route.route_id"
+          );
+        })
+        .whereNull("user_route.deleted_at")
+        .where({
+          "user_route.user_id": findUser.id,
+        });
+
       /*
         jwt-simple Expiration time
         https://github.com/hokaccha/node-jwt-simple/issues/50
        */
       const now = Math.floor(Date.now() / 1000);
       const payload = {
+        id: findUser.id,
+        name: findUser.name,
+        login: findUser.login,
         email: findUser.email,
+        expiredPassword: findUser.expiredPassword,
+        route: findUserRoutes,
         exp: (now + 60) * 60,
         iat: now,
         id: findUser.id,
