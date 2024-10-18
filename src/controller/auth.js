@@ -71,9 +71,6 @@ module.exports = (app) => {
         route: findUserRoutes,
         exp: (now + 60) * 60,
         iat: now,
-        id: findUser.id,
-        login: findUser.login,
-        name: findUser.name,
       };
 
       res.json({
@@ -81,7 +78,48 @@ module.exports = (app) => {
         token: jwt.encode(payload, process.env.APP_KEY),
       });
     } catch (error) {
-      res.send({ aviso: "Request error.", erro: error });
+      // res.send({ aviso: "Request error.", erro: error });
+      return res.json({ erro: error });
+    }
+  };
+
+  const resetPassword = async (req, res) => {
+    const erros = validate(req.body, userValidate);
+    if (erros) return res.json({ erro: erros });
+
+    try {
+      console.log(req.body, "resetPassword");
+      const user = { ...req.body };
+
+      const findUser = await app
+        .db("user")
+        .first()
+        .whereNull("user.deleted_at")
+        .where({
+          login: user.login,
+          password: user.password,
+        });
+
+      if (!findUser) return res.json({ erro: "User not found!" });
+
+      const date = new Date(Date.now());
+      date.setMonth(date.getMonth() + 1);
+
+      await app
+        .db("user")
+        .whereNull("user.deleted_at")
+        .where({
+          login: user.login,
+          password: user.password,
+        })
+        .update({
+          password: user.confirmacao,
+          expiration_date: date.toJSON().slice(0, 10), // Vencimento em 2 meses
+        });
+
+      return res.json({ message: "Password Reset" });
+    } catch (error) {
+      return res.json({ erro: error });
     }
   };
 
@@ -102,5 +140,5 @@ module.exports = (app) => {
     }
   };
 
-  return { login, validateToken };
+  return { login, resetPassword, validateToken };
 };
