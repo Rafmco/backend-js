@@ -45,7 +45,15 @@ module.exports = (app) => {
       // User_Route
       const findUserRoutes = await app
         .db("user_route")
-        .select("route.name", "route.url", "route.order")
+        .select(
+          "route.id",
+          "route.name",
+          "route.url",
+          "route.icon",
+          "route.order",
+          "route.parent_id",
+          "route.icon_color"
+        )
         .innerJoin("route", function () {
           this.onNull("route.deleted_at").andOn(
             "route.id",
