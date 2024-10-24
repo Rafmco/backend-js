@@ -75,6 +75,7 @@ module.exports = (app) => {
         name: findUser.name,
         login: findUser.login,
         email: findUser.email,
+        userImage: findUser.url_photograph,
         expiredPassword: findUser.expiredPassword,
         route: findUserRoutes,
         exp: (now + 60) * 60,
