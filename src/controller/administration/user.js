@@ -9,35 +9,39 @@ const crypto = require("crypto");
  * @param {this} app
  */
 
-module.exports = app => {
-
+module.exports = (app) => {
   const { hookUpdate, hookDelete } = app.src.middleware.knexHook;
 
   const SaveValidate = {
     confirmPassword: { equality: "password", presence: { allowEmpty: false } },
-    email: { email: { message: "Doesn't look like a valid email" }, presence: { allowEmpty: false } },
+    email: {
+      email: { message: "Doesn't look like a valid email" },
+      presence: { allowEmpty: false },
+    },
     login: { presence: { allowEmpty: false } },
     name: { presence: { allowEmpty: false } },
-    password: { presence: { allowEmpty: false } }
+    password: { presence: { allowEmpty: false } },
   };
   const EditValidate = {
     id: { presence: { allowEmpty: false, numericality: true } },
-    ...SaveValidate
+    ...SaveValidate,
   };
 
   /**
- * @description Method to encrypt user password
- *
- * @param {*} password
- * @return {*} "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3"
- */
-  const criptografarSenha = password => {
+   * @description Method to encrypt user password
+   *
+   * @param {*} password
+   * @return {*} "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3"
+   */
+  const criptografarSenha = (password) => {
     return crypto.createHash("sha256").update(password).digest("hex");
   };
 
   const onList = async (req, res) => {
     try {
-      const findAllUsers = await app.db("user")
+      console.log("listar");
+      const findAllUsers = await app
+        .db("user")
         .column(
           "id",
           "name",
@@ -50,7 +54,7 @@ module.exports = app => {
         )
         .select()
         .where({
-          deleted_at: null
+          deleted_at: null,
         });
 
       return res.json({ registros: findAllUsers });
@@ -63,7 +67,8 @@ module.exports = app => {
     try {
       if (!req.params.id) return res.json({ erro: "Uninformed user!" });
 
-      const findUser = await app.db("user")
+      const findUser = await app
+        .db("user")
         .column(
           "id",
           "name",
@@ -77,10 +82,11 @@ module.exports = app => {
         .select()
         .where({
           deleted_at: null,
-          id: req.params.id
+          id: req.params.id,
         });
 
-      if (findUser && !findUser.length) return res.json({ erro: "User not found!" });
+      if (findUser && !findUser.length)
+        return res.json({ erro: "User not found!" });
 
       return res.json({ ...findUser[0] });
     } catch (error) {
@@ -89,7 +95,6 @@ module.exports = app => {
   };
 
   const onSave = async (req, res) => {
-
     let erro = validate(req.body, SaveValidate);
     if (erro) return res.json({ erro: erro });
 
@@ -97,30 +102,33 @@ module.exports = app => {
       let user = { ...req.body };
       user.login = user.login.toUpperCase();
       user.email = user.email ? user.email : "";
-      user.password = user.password ? String(criptografarSenha(user.password)) : null;
+      user.password = user.password
+        ? String(criptografarSenha(user.password))
+        : null;
       user.created_by = user.login;
       user.created_at = dayjs().format("YYYY-MM-DD HH:mm:ss");
       delete user.confirmPassword;
 
-      const findUser = await app.db("user")
-        .where({
-          deleted_at: null,
-          email: user.email,
-          login: user.login
-        });
+      const findUser = await app.db("user").where({
+        deleted_at: null,
+        email: user.email,
+        login: user.login,
+      });
 
       if (findUser && findUser.length) {
         return res.json({
-          erro: `User already registered! <br> Name:${user.name} Login:${user.login} Email:${user.email}`
+          erro: `User already registered! <br> Name:${user.name} Login:${user.login} Email:${user.email}`,
         });
       }
 
-      const response = await app.db("user")
-        .insert({
-          ...user
-        });
+      const response = await app.db("user").insert({
+        ...user,
+      });
 
-      return res.json({ message: "User successfully inserted", userId: response[0] });
+      return res.json({
+        message: "User successfully inserted",
+        userId: response[0],
+      });
     } catch (error) {
       return res.json({ erro: error });
     }
@@ -134,30 +142,36 @@ module.exports = app => {
       let user = { ...req.body };
       user.login = user.login.toUpperCase();
       user.email = user.email ? user.email : "";
-      user.password = user.password ? String(criptografarSenha(user.password)) : null;
+      user.password = user.password
+        ? String(criptografarSenha(user.password))
+        : null;
       user.created_by = user.login;
       user.created_at = dayjs().format("YYYY-MM-DD HH:mm:ss");
       delete user.confirmPassword;
       hookUpdate(user);
 
-      const findUser = await app.db("user")
+      const findUser = await app.db("user").where({
+        deleted_at: null,
+        id: user.id,
+      });
+
+      if (findUser && !findUser.length)
+        return res.json({ erro: "User not found!" });
+
+      const response = await app
+        .db("user")
         .where({
           deleted_at: null,
-          id: user.id
-        });
-
-      if (findUser && !findUser.length) return res.json({ erro: "User not found!" });
-
-      const response = await app.db("user")
-        .where({
-          deleted_at: null,
-          id: user.id
+          id: user.id,
         })
         .update({
-          ...user
+          ...user,
         });
 
-      return res.json({ message: "User successfully inserted", userId: response[0] });
+      return res.json({
+        message: "User successfully inserted",
+        userId: response[0],
+      });
     } catch (error) {
       return res.json({ erro: error });
     }
@@ -170,21 +184,22 @@ module.exports = app => {
       let user = { id: req.params.id };
       hookDelete(user);
 
-      const findUser = await app.db("user")
+      const findUser = await app.db("user").where({
+        deleted_at: null,
+        id: req.params.id,
+      });
+
+      if (findUser && !findUser.length)
+        return res.json({ erro: "User not found!" });
+
+      await app
+        .db("user")
         .where({
           deleted_at: null,
-          id: req.params.id
-        });
-
-      if (findUser && !findUser.length) return res.json({ erro: "User not found!" });
-
-      await app.db("user")
-        .where({
-          deleted_at: null,
-          id: req.params.id
+          id: req.params.id,
         })
         .update({
-          ...user
+          ...user,
         });
 
       return res.json({ message: "Deleted user!" });
@@ -200,5 +215,4 @@ module.exports = app => {
     onSave,
     onView,
   };
-
 };

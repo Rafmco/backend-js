@@ -118,6 +118,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `name` varchar(60) DEFAULT NULL,
   `login` varchar(45) DEFAULT NULL,
   `password` varchar(250) DEFAULT NULL,
+  `notification_token` varchar(255) DEFAULT NULL,
   `email` varchar(250) DEFAULT NULL,
   `birth_date` timestamp NULL DEFAULT NULL,
   `url_photograph` varchar(250) DEFAULT NULL,

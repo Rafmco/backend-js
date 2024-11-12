@@ -7,6 +7,7 @@ exports.up = function (knex) {
       table.string("name", 60).nullable();
       table.string("login", 45).nullable();
       table.string("password", 250).nullable();
+      table.string("notification_token", 255).nullable();
       table.timestamp("expiration_date").nullable();
       table.string("email", 250).nullable();
       table.timestamp("birth_date").nullable();

@@ -149,5 +149,37 @@ module.exports = (app) => {
     }
   };
 
-  return { login, resetPassword, validateToken };
+  const setNotificationToken = async (req, res) => {
+    try {
+      console.log(req.body, "setNotificationToken");
+      const user = { ...req.body };
+
+      const findUser = await app
+        .db("user")
+        .first()
+        .whereNull("user.deleted_at")
+        .where({
+          login: user.login,
+        });
+
+      if (!findUser) return res.json({ erro: "User not found!" });
+
+      // Set Notification_Token
+      await app
+        .db("user")
+        .whereNull("user.deleted_at")
+        .where({
+          login: user.login,
+        })
+        .update({
+          notification_token: user.notification_token,
+        });
+
+      return res.json({ message: "Notification Token Set" });
+    } catch (error) {
+      return res.json({ erro: error });
+    }
+  };
+
+  return { login, resetPassword, validateToken, setNotificationToken };
 };
